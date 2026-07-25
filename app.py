@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.title("Promesse-M Bot : Mon assistant en promotion de la santé")
+st.title("Promesse-M Bot: Mon assistant en promotion de la santé")
 
 user_input = st.text_input("Pose ta question :")
 
