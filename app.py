@@ -1,9 +1,12 @@
 import streamlit as st
+from rag_engine import chatbot_rag
 
 st.title("Promesse-M Bot: Mon assistant en promotion de la santé")
 
-user_input = st.text_input("Pose ta question :")
+question = st.text_input("Pose ta question :")
 
-if user_input:
-    st.write("👤 Vous :", user_input)
-    st.write("🤖 Prototype :", "Merci ! Le chatbot sera bientôt connecté au moteur RAG.")
+if question:
+    reponse, sources = chatbot_rag(question)
+    st.write("Vous :", question)
+    st.write("🤖 Promesse-M Bot :", reponse)
+
