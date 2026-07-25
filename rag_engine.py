@@ -14,17 +14,19 @@ import streamlit as st
 # ============================================================
 
 # ⚠️ IMPORTANT :
-# Sur Streamlit Cloud, tu dois mettre tes fichiers dans ton dépôt GitHub :
-# - chatbot-ai4oh/faiss_index/index.bin
-# - chatbot-ai4oh/faiss_index/chunks.pkl
+# Dans ton dépôt GitHub, index.bin et chunks.pkl sont à la racine :
+# - chatbot-ai4oh/index.bin
+# - chatbot-ai4oh/chunks.pkl
 #
-# Puis remplacer le chemin ci-dessous par un chemin relatif :
+# Donc FAISS_FOLDER doit être vide :
 
-FAISS_FOLDER = "faiss_index/"
+FAISS_FOLDER = ""
 
-index = faiss.read_index(FAISS_FOLDER + "index.bin")
+# Charger l’index FAISS
+index = faiss.read_index("index.bin")
 
-with open(FAISS_FOLDER + "chunks.pkl", "rb") as f:
+# Charger les chunks
+with open("chunks.pkl", "rb") as f:
     tous_les_chunks = pickle.load(f)
 
 # ============================================================
@@ -87,6 +89,7 @@ def chatbot_rag(question, k=5):
 
     # 5️⃣ Retourner la réponse + sources
     return response.choices[0].message.content, chunks_pertinents
+
 
 
 
