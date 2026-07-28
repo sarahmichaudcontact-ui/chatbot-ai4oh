@@ -1,53 +1,47 @@
 import streamlit as st
-from rag_engine import ask  # ton moteur RAG
+from rag_engine import chatbot_rag
 
-st.set_page_config(page_title="Chatbot AI4OH", page_icon="🤖")
+st.title("Promesse-M Bot: Mon assistant en promotion de la santé")
 
 # -----------------------------
-# 1. MÉMOIRE DE CONVERSATION
+# MÉMOIRE DE CONVERSATION
 # -----------------------------
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
 
 # -----------------------------
-# 2. TITRE
+# CHAMP DE SAISIE
 # -----------------------------
-st.title("🤖 Chatbot AI4OH")
-st.write("Posez vos questions sur votre mémoire, votre chatbot ou l’IA One Health.")
+question = st.text_input("Pose ta question :")
 
+if question:
+    # Ajouter la question dans l'historique
+    st.session_state.messages.append({"role": "user", "content": question})
 
-# -----------------------------
-# 3. CHAMP DE SAISIE
-# -----------------------------
-user_input = st.text_input("Votre question :")
+    # Appeler ton moteur RAG (question seule)
+    reponse, sources = chatbot_rag(question)
 
-if user_input:
-    # Ajouter la question dans l’historique
-    st.session_state.messages.append({"role": "user", "content": user_input})
-
-    # Appeler ton moteur RAG AVEC l’historique complet
-    response = ask(st.session_state.messages)
-
-    # Ajouter la réponse dans l’historique
-    st.session_state.messages.append({"role": "assistant", "content": response})
+    # Ajouter la réponse dans l'historique
+    st.session_state.messages.append({"role": "assistant", "content": reponse})
 
 
 # -----------------------------
-# 4. AFFICHAGE DE LA CONVERSATION
+# AFFICHAGE DE LA CONVERSATION
 # -----------------------------
 st.write("### Conversation")
 
 for msg in st.session_state.messages:
     if msg["role"] == "user":
-        st.write(f"👤 **Vous :** {msg['content']}")
+        st.write(f"👤 Vous : {msg['content']}")
     else:
-        st.write(f"🤖 **Chatbot :** {msg['content']}")
+        st.write(f"🤖 Promesse-M Bot : {msg['content']}")
 
 
 # -----------------------------
-# 5. BOUTON POUR EFFACER LA CONVERSATION
+# BOUTON POUR EFFACER LA CONVERSATION
 # -----------------------------
 if st.button("Effacer la conversation"):
     st.session_state.messages = []
     st.experimental_rerun()
+
