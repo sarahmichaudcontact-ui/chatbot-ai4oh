@@ -79,19 +79,18 @@ def chatbot_rag(question, k=5):
     distances, indices = index.search(np.array(question_vec), k)
     chunks_pertinents = [tous_les_chunks[i]["texte"] for i in indices[0]]
 
-    # 3️⃣ Construire le prompt
+    # 3️⃣ Construire le prompt utilisateur
     contexte = "\n\n".join(chunks_pertinents)
-    prompt = (
-        f"{SYSTEM_PROMPT}\n\nContexte:\n{contexte}\n\n"
-        f"Question: {question}\nRéponse:"
-    )
+    user_prompt = f"Contexte:\n{contexte}\n\nQuestion: {question}\nRéponse:"
 
-    # 4️⃣ Appel au modèle Groq
+    # 4️⃣ Appel au modèle Groq (AVEC LE BON RÔLE SYSTÈME)
     response = client.chat.completions.create(
         model="llama-3.1-8b-instant",
-        messages=[{"role": "user", "content": prompt}]
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": user_prompt}
+        ]
     )
 
     # 5️⃣ Retourner la réponse + sources
     return response.choices[0].message.content, chunks_pertinents
-
